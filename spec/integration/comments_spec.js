@@ -32,10 +32,10 @@ describe("routes : comments", () => {
         Topic.create({
           title: "Expeditions to Alpha Centauri",
           description: "A compilation of reports from recent visits to the star system.",
-          posts: [{   
+          posts: [{
             title: "My first visit to Proxima Centauri b",
             body: "I saw some rocks.",
-            userId: this.user.id   
+            userId: this.user.id
           }]
         }, {
           include: {                        //nested creation of posts
@@ -47,9 +47,9 @@ describe("routes : comments", () => {
           this.topic = topic;                 // store topic
           this.post = this.topic.posts[0];  // store post
 
-          Comment.create({  
+          Comment.create({
             body: "ay caramba!!!!!",
-            userId: this.user.id,          
+            userId: this.user.id,
             postId: this.post.id
           })
           .then((coment) => {
@@ -83,10 +83,10 @@ describe("routes : comments", () => {
              }
            );
          });
-    
+
     // #3
          describe("POST /topics/:topicId/posts/:postId/comments/create", () => {
-    
+
            it("should not create a new comment", (done) => {
              const options = {
                url: `${base}${this.topic.id}/posts/${this.post.id}/comments/create`,
@@ -110,18 +110,18 @@ describe("routes : comments", () => {
              );
            });
          });
-    
-    
+
+
     // #5
          describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
-    
+
            it("should not delete the comment with the associated ID", (done) => {
              Comment.all()
              .then((comments) => {
                const commentCountBeforeDelete = comments.length;
-    
+
                expect(commentCountBeforeDelete).toBe(1);
-    
+
                request.post(
                  `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
                  (err, res, body) => {
@@ -131,7 +131,7 @@ describe("routes : comments", () => {
                    expect(comments.length).toBe(commentCountBeforeDelete);
                    done();
                  })
-    
+
                });
              })
            });
@@ -210,6 +210,91 @@ describe("routes : comments", () => {
 
     });
 
-  }); //end context for signed in user
+    describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+        beforeEach((done) => {
+          User.create({
+            email: "ryandiercks@bloc.io",
+            password: "thatcher",
+            role: "member"
+          })
+          .then((user) => {
+          request.get({
+            url: "http://localhost:3000/auth/fake",
+            form: {
+                role: user.role,
+                userId: user.id,
+                email: user.email
+            }
+          },
+          (err, res, body) => {
+            done();
+              }
+            );
+          });
+        });
+
+        it("should not delete another members comment", (done) => {
+          Comment.all()
+          .then((comments) => {
+            const commentCountBeforeDelete = comments.length;
+            expect(commentCountBeforeDelete).toBe(1);
+            request.post(
+              `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+              (err, res, body) => {
+                expect(res.statusCode).toBe(401);
+                Comment.all()
+                .then((comments) => {
+                  expect(err).toBeNull();
+                  expect(comments.length).toBe(commentCountBeforeDelete);
+                  done();
+                  })
+                }
+              );
+            })
+          });
+        });
+      });
+
+  });
+
+  //end context for signed in user
+
+  describe("signed in admin performing CRUD actions for Comment", () => {
+
+    beforeEach((done) => {    // before each suite in this context
+      request.get({           // mock authentication
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          role: "admin",     // mock authenticate as an admin
+          userId: this.user.id
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+
+    it("should delete the comment if the user is an admin", (done) => {
+      Comment.all()
+        .then((comments) => {
+          const commentCountBeforeDelete = comments.length;
+
+          expect(commentCountBeforeDelete).toBe(1);
+
+          request.post(
+           `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+            expect(res.statusCode).toBe(302);
+            Comment.all()
+            .then((comments) => {
+              expect(err).toBeNull();
+              expect(comments.length).toBe(commentCountBeforeDelete - 1);
+              done();
+            });
+
+          });
+        })
+    });
 
 });
