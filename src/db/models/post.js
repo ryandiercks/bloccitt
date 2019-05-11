@@ -49,6 +49,14 @@ module.exports = (sequelize, DataTypes) => {
         postId: post.id
       });
     });
+    // a lifecycle event to create an upvote for a newly created post automatically.
+    Post.afterCreate((post, callback) => {
+      return models.Vote.create({
+        userId: post.userId,
+        postId: post.id,
+  value: 1 
+      });
+    });
   };
   Post.prototype.getPoints = function(){
 

@@ -71,8 +71,8 @@ describe("routes : votes", () => {
     });
 //  Define a suite to describe a guest user attempting to vote.
     describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
-
-      it("should not create a new vote", (done) => {
+// create an upvote automatically for a post
+      it("should create an automatic new vote", (done) => {
         const options = {
           url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
         };
@@ -84,8 +84,9 @@ describe("routes : votes", () => {
                 postId: this.post.id
               }
             })
+            // create an upvote automatically for a post
             .then((vote) => {
-              expect(vote).toBeNull();
+              expect(vote).not.toBeNull(); 
               done();
             })
             .catch((err) => {
