@@ -260,4 +260,66 @@ describe("Vote", () => {
         });
    
       });
-});
+// a test for the getPoints method of the Post model.
+      describe("#getPoints()", () => {
+        
+        it("should return the amount of all the votes", (done) => {
+            Vote.create({
+              value: 1,
+              userId: this.user.id,
+              postId: this.post.id
+           })
+           .then((votes) => {
+              let points = this.post.getPoints();
+              expect(points).toBe(1);
+              done();
+           })
+           .catch((err) => {
+              console.log(err);
+              done();
+           });
+         });
+       });
+   // a test for a method called hasUpvoteFor().
+       describe("#hasUpvoteFor()", () => {
+         it("should return true if the associated user with the matching userId has an upvote for the post", (done) => {
+            Vote.create({
+              value: 1,
+              userId: this.user.id,
+              postId: this.post.id
+            })
+            .then((vote) => {
+              vote.postId.hasUpvoteFor()
+              .then((associatedPost) => {
+                expect(this.votes).toBe(true);
+                done();
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          });
+       });
+   //  a test for a method called hasDownvoteFor()
+       describe("#hasDownvoteFor()", () => {
+         it("should return true if the associated user with the matching userId has an upvote for the post", (done) => {
+            Vote.create({
+              value: -1,
+              userId: this.user.id,
+              postId: this.post.id
+            })
+            .then((vote) => {
+              vote.postId.hasDownvoteFor()
+              .then((associatedPost) => {
+                expect(this.votes).toBe(true);
+                done();
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          });
+        });
+      });

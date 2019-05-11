@@ -56,11 +56,11 @@ describe("routes : votes", () => {
   });
   describe("guest attempting to vote on a post", () => {
 
-    beforeEach((done) => {    // before each suite in this context
+    beforeEach((done) => {    
       request.get({
         url: "http://localhost:3000/auth/fake",
         form: {
-          userId: 0 // ensure no user in scope
+          userId: 0 
         }
       },
         (err, res, body) => {
@@ -69,6 +69,35 @@ describe("routes : votes", () => {
       );
 
     });
+    // Create more than one vote per user for a given post. This scenario should not be successful.
+    describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
+
+      it("should not create a new vote", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+        };
+        request.get(options,
+          (err, res, body) => {
+            Vote.findOne({            
+              where: {
+                userId: this.user.id,
+                postId: this.post.id
+              }
+            })
+            .then((vote) => {
+              expect(vote).toBeNull();
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          }
+        );
+      });
+
+    });
+  });
 //  Define a suite to describe a guest user attempting to vote.
     describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
 
@@ -143,6 +172,33 @@ describe("routes : votes", () => {
           }
         );
       });
+      // Create a vote with a value of anything other than 1 or -1. This scenario should not be successful.
+      it("should not create more than 1 up vote per user", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+        };
+        request.get(options, 
+        (err, res, body) => {
+          Vote.findOne({
+            where: {
+              userId: this.user.id,
+              postId: this.post.id
+            }
+          })
+          .then((vote) => {
+            expect(vote).not.toBeNull();
+            expect(vote.value).toBe(1);
+            expect(vote.userId).toBe(this.user.id);
+            expect(vote.postId).toBe(this.post.id);
+            done();
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
+        });
+      });
+    });
     });
 
     describe("GET /topics/:topicId/posts/:postId/votes/downvote", () => {
@@ -173,9 +229,34 @@ describe("routes : votes", () => {
           }
         );
       });
+      // Create a vote with a value of anything other than 1 or -1. This scenario should not be successful.
+      it("should not create more than 1 down vote per user", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/downvote`
+        };
+        request.get(options, 
+        (err, res, body) => {
+          Vote.findOne({
+            where: {
+              userId: this.user.id,
+              postId: this.post.id
+            }
+          })
+          .then((vote) => {
+            expect(vote).not.toBeNull();
+            expect(vote.value).toBe(-1);
+            expect(vote.userId).toBe(this.user.id);
+            expect(vote.postId).toBe(this.post.id);
+            done();
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
+        });
+      });
     });
 
-  });
+  
   // test suites go here
 
-});
