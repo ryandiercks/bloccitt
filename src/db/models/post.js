@@ -39,6 +39,16 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "postId",
       as: "votes"
     });
+    Post.hasMany(models.Favorite, {
+      foreignKey: "postId",
+      as: "favorites"
+    });
+    Post.afterCreate((post, callback) => {
+      return models.Favorite.create({
+        userId: post.userId,
+        postId: post.id
+      });
+    });
   };
   Post.prototype.getPoints = function(){
 
@@ -52,6 +62,10 @@ module.exports = (sequelize, DataTypes) => {
           .map((v) => { return v.value })
           .reduce((prev, next) => { return prev + next });
       };
-   
+      // We will need to know if a user has already favorited a post so we can style the button appropriately
+      Post.prototype.getFavoriteFor = function(userId){
+        return this.favorites.find((favorite) => { return favorite.userId == userId });
+      };
+      
   return Post;
 };
