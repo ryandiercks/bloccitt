@@ -1,15 +1,17 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Favorites', {
+    return queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-
- // #1 Set a postId attribute to associate the favorite to a post. If we delete a post, we should delete all associated favorites.
+      body: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       postId: {
         type: Sequelize.INTEGER,
         onDelete: "CASCADE",
@@ -20,7 +22,6 @@ module.exports = {
           as: "postId"
         }
       },
- // #2 Set a userId attribute to associate the favorite to a user. If we delete a user, we should delete all associated favorites.
       userId: {
         type: Sequelize.INTEGER,
         onDelete: "CASCADE",
@@ -42,6 +43,7 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Favorites');
+    return queryInterface.dropTable('Comments');
   }
 };
+

@@ -1,18 +1,22 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Posts', {
+    return queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title: {
+      email: {
         allowNull: false,
+        unique: true,
+	validate: {
+	  isEmail: { msg: "must be a valid email" }
+	},
         type: Sequelize.STRING
       },
-      body: {
+      password: {
         allowNull: false,
         type: Sequelize.STRING
       },
@@ -23,20 +27,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      topicId: {
-        type: Sequelize.INTEGER,
-        onDelete: "CASCADE", // delete post if parent topic is deleted
-        allowNull: false,    // validation to prevent null value
-        references: {        // association information
-          model: "Topics",   // table name
-          key: "id",         // attribute to use
-          as: "topicId"      // reference as topicId
-        },
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Posts');
+    return queryInterface.dropTable('Users');
   }
 };
