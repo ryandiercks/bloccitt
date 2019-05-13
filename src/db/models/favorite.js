@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Favorite = sequelize.define('Favorite', {
+  var Favorite = sequelize.define('Favorite', {
     postId: {
       type: DataTypes.INTEGER,
       allowNull: false
