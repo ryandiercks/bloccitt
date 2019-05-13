@@ -59,6 +59,13 @@ module.exports = (sequelize, DataTypes) => {
           order: [["createdAt", "DESC"]]
         }
       });
+      Post.addScope("favoritedPosts", (userId) => {
+        return {
+          where: { userId: userId},
+          order: [["createdAt", "DESC"]]
+        }
+      });
+   
   };
   Post.prototype.getPoints = function(){
 
