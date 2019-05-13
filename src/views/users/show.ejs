@@ -11,7 +11,7 @@
 
       <% include ../static/partials/messages.ejs %>
 
- <!-- #1 -->
+ <!-- Evaluate the user's email -->
       <h1><%= `${user.email}'s profile` %></h1>
 
       <hr>
@@ -20,10 +20,10 @@
 
       <ul class="list-unstyled">
 
- <!-- #2 -->
+ <!-- Check if there are posts for the user -->
         <% if(posts) { %>
           <% posts.forEach((post) => { %>
- <!-- #3 -->
+ <!-- If there are posts, build a <li> for each and link to post's show view -->
             <li>
               <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>">
                 <%= post.title %>
@@ -38,11 +38,11 @@
 
       <ul class="list-unstyled">
 
- <!-- #4 -->
+ <!-- Check if there are comments for the user -->
         <% if(comments) { %>
           <% comments.forEach((comment) => { %>
 
- <!-- #5 -->
+ <!-- If there are comments, build a <li> for each and link to comment's post -->
             <li>
               <span>Post: </span><a href="/topics/<%= comment.Post.topicId %>/posts/<%= comment.Post.id %>">
                 <%= comment.Post.title %>
@@ -53,9 +53,23 @@
           <% }) %>
         <% } %>
       </ul>
-    </main>
+      <hr>
+      <h2>Favorite Posts</h2>
 
-    <% include ../static/partials/baseScripts.ejs %>
+        <ul class="list-unstyled">
 
-  </body>
+ <!-- Check if there are favorites for the user -->
+          <% if(favorites) { %>
+            <% favorites.forEach((favorite) => { %>
+              <li>
+                <span>Post: </span><a href="/topics/<%= favorite.postId %>/posts/<%= favorite.postId %>">
+                  <%= favorite.Post.title %>
+                </a>
+              </li>
+            <% }) %>
+          <% } %>
+        </ul>
+      </main>
+      <% include ../static/partials/baseScripts.ejs %>
+    </body>
 </html>

@@ -51,8 +51,6 @@ describe("routes : favorites", () => {
        });
      });
    });
-// Define a suite to describe a guest user attempting to favorite a post.
-
 
    describe("guest attempting to favorite on a post", () => {
 
@@ -79,8 +77,7 @@ describe("routes : favorites", () => {
         };
 
         let favCountBeforeCreate;
-// We take note of the number of favorites that exist for the post before sending the delete request. 
-// We then check that the number of favorites has not changed to confirm no favorite was deleted.
+
         this.post.getFavorites()
         .then((favorites) => {
           favCountBeforeCreate = favorites.length;
@@ -102,7 +99,7 @@ describe("routes : favorites", () => {
        });
      });
    });
-// Define a suite to describe a signed in user attempting to favorite a post.
+
    describe("signed in user favoriting a post", () => {
 
      beforeEach((done) => {  // before each suite in this context
