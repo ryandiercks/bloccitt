@@ -15,7 +15,6 @@ describe("User", () => {
   });
 
   describe("#create()", () => {
-
     it("should create a User object with a valid email and password", (done) => {
       User.create({
         email: "user@example.com",
@@ -31,7 +30,6 @@ describe("User", () => {
         done();
       });
     });
-
     it("should not create a user with invalid email or password", (done) => {
       User.create({
         email: "It's-a me, Mario!",
@@ -50,15 +48,12 @@ describe("User", () => {
         done();
       });
     });
-
     it("should not create a user with an email already taken", (done) => {
-
       User.create({
         email: "user@example.com",
         password: "1234567890"
       })
       .then((user) => {
-
         User.create({
           email: "user@example.com",
           password: "nananananananananananananananana BATMAN!"
@@ -75,7 +70,6 @@ describe("User", () => {
           expect(err.message).toContain("Validation error");
           done();
         });
-
         done();
       })
       .catch((err) => {
@@ -83,5 +77,7 @@ describe("User", () => {
         done();
       });
     });
+
   });
+
 });

@@ -1,21 +1,21 @@
 {
   "development": {
-    "username": "postgres",
+    "username": "Khang",
     "password": null,
     "database": "bloccit-dev",
     "host": "127.0.0.1",
     "dialect": "postgres",
     "logging": false,
-    "operatorsAliases": false 
+    "operatorsAliases": false
   },
   "test": {
-    "username": "postgres",
+    "username": "Khang",
     "password": null,
     "database": "bloccit-test",
     "host": "127.0.0.1",
     "dialect": "postgres",
     "logging": false,
-    "operatorsAliases": false 
+    "operatorsAliases": false
   },
   "production": {
     "username": "root",
@@ -24,7 +24,7 @@
     "host": "127.0.0.1",
     "dialect": "postgres",
     "logging": false,
-    "operatorsAliases": false ,
+    "operatorsAliases": false,
     "use_env_variable": "DATABASE_URL"
   }
 }

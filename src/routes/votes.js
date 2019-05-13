@@ -3,7 +3,7 @@ const router = express.Router();
 
 const voteController = require("../controllers/voteController");
 
-// Define routes for the upvote and downvote actions 
+ // #1
 router.get("/topics/:topicId/posts/:postId/votes/upvote",
   voteController.upvote);
 

@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         as: "topicId",
       }
     }
-  },{});
-
+  }, {});
   Banner.associate = function(models) {
-     Banner.belongsTo(models.Topic, {
-       foreignKey: "topicId",
-       onDelete: "CASCADE",
-     });
+    // associations can be defined here
+    Banner.belongsTo(models.Topic, {
+      foreignKey: "topicId",
+      onDelete: "CASCADE",
+    });
   };
   return Banner;
 };
