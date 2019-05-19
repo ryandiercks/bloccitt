@@ -1,14 +1,17 @@
+
 const request = require("request");
-const server = require("../../src/server");
 const base = "http://localhost:3000/users/";
 const User = require("../../src/db/models").User;
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
- const Post = require("../../src/db/models").Post;
- const Comment = require("../../src/db/models").Comment;
+const Post = require("../../src/db/models").Post;
+const Comment = require("../../src/db/models").Comment;
+const Favorite = require("../../src/db/models").Favorite;
+
 describe("routes : users", () => {
 
   beforeEach((done) => {
+    const server = require("../../src/server");
     sequelize.sync({force: true})
     .then(() => {
       done();
@@ -87,63 +90,147 @@ describe("routes : users", () => {
        });
      });
    });
+
    describe("GET /users/:id", () => {
 
-    beforeEach((done) => {
-// #3
-      this.user;
-      this.post;
-      this.comment;
+     beforeEach((done) => {
+       this.user;
+       this.post;
+       this.comment;
 
-      User.create({
-        email: "starman@tesla.com",
-        password: "Trekkie4lyfe"
-      })
-      .then((res) => {
-        this.user = res;
+       User.create({
+         email: "starman@tesla.com",
+         password: "Trekkie4lyfe"
+       })
+       .then((res) => {
+         this.user = res;
 
-        Topic.create({
-          title: "Winter Games",
-          description: "Post your Winter Games stories.",
-          posts: [{
-            title: "Snowball Fighting",
-            body: "So much snow!",
-            userId: this.user.id
-          }]
-        }, {
-          include: {
-            model: Post,
-            as: "posts"
-          }
-        })
-        .then((res) => {
-          this.post = res.posts[0];
+         Topic.create({
+           title: "Winter Games",
+           description: "Post your Winter Games stories.",
+           posts: [{
+             title: "Snowball Fighting",
+             body: "So much snow!",
+             userId: this.user.id
+           }]
+         }, {
+           include: {
+             model: Post,
+             as: "posts"
+           }
+         })
+         .then((res) => {
+           this.post = res.posts[0];
 
-          Comment.create({
-            body: "This comment is alright.",
-            postId: this.post.id,
-            userId: this.user.id
-          })
-          .then((res) => {
-            this.comment = res;
-            done();
-          })
-        })
-      })
+           Comment.create({
+             body: "This comment is alright.",
+             postId: this.post.id,
+             userId: this.user.id
+           })
+           .then((res) => {
+             this.comment = res;
+             done();
+           })
+         })
+       })
 
-    });
+     });
 
-// #4
-    it("should present a list of comments and posts a user has created", (done) => {
+     it("should present a list of comments and posts a user has created", (done) => {
 
-      request.get(`${base}${this.user.id}`, (err, res, body) => {
+       request.get(`${base}${this.user.id}`, (err, res, body) => {
 
-// #5
-        expect(body).toContain("Snowball Fighting");
-        expect(body).toContain("This comment is alright.")
-        done();
-      });
+         expect(body).toContain("Snowball Fighting");
+         expect(body).toContain("This comment is alright.")
+         done();
+       });
 
-    });
-  });
+     });
+   });
+
+  describe("GET /users/:id", () => {
+
+     beforeEach((done) => {
+       this.user;
+       this.post;
+       this.comment;
+
+       User.create({
+         email: "starman@tesla.com",
+         password: "Trekkie4lyfe"
+       })
+       .then((res) => {
+         this.user = res;
+
+         Topic.create({
+           title: "Winter Games",
+           description: "Post your Winter Games stories.",
+           posts: [{
+             title: "Snowball Fighting",
+             body: "So much snow!",
+             userId: this.user.id
+           }]
+         }, {
+           include: {
+             model: Post,
+             as: "posts"
+           }
+         })
+         .then((res) => {
+           this.post = res.posts[0];
+
+           Favorite.create({
+             postId: this.post.id,
+             userId: this.user.id
+           })
+           .then((res) => {
+             this.favorite = res;
+             done();
+           })
+         })
+       })
+
+     });
+
+     it("should present a list of favorited posts a user has favorited", (done) => {
+
+       request.get(`${base}${this.user.id}`, (err, res, body) => {
+         console.log(body);
+         expect(body).toContain("Snowball Fighting");
+         done();
+       });
+
+     });
+   });
+
+
 });
+// Comment
+//           Comment.create({
+//             body: "This comment is alright.",
+//             postId: this.post.id,
+//             userId: this.user.id
+//           })
+//           .then((res) => {
+//             this.comment = res;
+//             done();
+//           })
+//         })
+//       })
+
+//     });
+
+// // #4
+//     it("should present a list of comments and posts a user has created", (done) => {
+
+//       request.get(`${base}${this.user.id}`, (err, res, body) => {
+
+// // #5
+//         expect(body).toContain("Snowball Fighting");
+//         expect(body).toContain("This comment is alright.")
+//         done();
+//       });
+
+//     });
+//   });
+// });
